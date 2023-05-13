@@ -1,7 +1,7 @@
 package interpreter
 
 import (
-	"lox/token"
+	"github.com/neo-youre-pena/golox/src/token"
 )
 
 type Expr interface {

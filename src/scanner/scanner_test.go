@@ -1,8 +1,9 @@
 package scanner
 
 import (
-	"lox/token"
 	"testing"
+
+	"github.com/neo-youre-pena/golox/src/token"
 )
 
 func TestScanTokens(t *testing.T) {

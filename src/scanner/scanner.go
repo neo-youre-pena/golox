@@ -2,9 +2,10 @@ package scanner
 
 import (
 	"fmt"
-	"lox/parseerror"
-	"lox/token"
 	"strconv"
+
+	"github.com/neo-youre-pena/golox/src/parseerror"
+	"github.com/neo-youre-pena/golox/src/token"
 )
 
 var keywords = map[string]token.Type{

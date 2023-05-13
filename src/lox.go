@@ -5,9 +5,10 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
-	"lox/parseerror"
-	"lox/scanner"
 	"os"
+
+	"github.com/neo-youre-pena/golox/src/parseerror"
+	"github.com/neo-youre-pena/golox/src/scanner"
 )
 
 func check(err error) {
