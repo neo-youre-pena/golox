@@ -32,17 +32,26 @@ func DefineAst(outputDir string, baseName string, types []string) {
 	buffer.WriteString("package interpreter\n")
 	buffer.WriteString("\n")
 	buffer.WriteString("import (\n")
-	buffer.WriteString("\t\"lox/token\"\n")
+	buffer.WriteString("\t\"github.com/neo-youre-pena/golox/src/token\"\n")
 	buffer.WriteString(")\n")
 	buffer.WriteString("\n")
 	buffer.WriteString("type " + capitalize(baseName) + " interface {\n")
 	buffer.WriteString("}\n")
 	buffer.WriteString("\n")
 
+	buffer.WriteString("type Visitor interface {\n")
+	for _, t := range types {
+		className := strings.TrimSpace(t[:bytes.IndexByte([]byte(t), ':')])
+		buffer.WriteString("\tvisitFor" + className + "(*" + className + ")\n")
+	}
+
+	buffer.WriteString("}\n")
+
 	for _, t := range types {
 		className := strings.TrimSpace(t[:bytes.IndexByte([]byte(t), ':')])
 		fields := t[bytes.IndexByte([]byte(t), ':')+1:]
 		defineType(&buffer, className, fields)
+		defineAcceptFunc(&buffer, className)
 	}
 
 	f, err := os.Create(path)
@@ -68,6 +77,12 @@ func defineType(buffer *bytes.Buffer, className string, fieldList string) {
 		buffer.WriteString("\t" + capitalize(string(field)) + "\n")
 	}
 
+	buffer.WriteString("}\n")
+}
+
+func defineAcceptFunc(buffer *bytes.Buffer, className string) {
+	buffer.WriteString("func (c *" + className + ") accept(v Visitor) {\n")
+	buffer.WriteString("\tv.visitFor" + className + "(c)\n")
 	buffer.WriteString("}\n")
 }
 
