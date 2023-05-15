@@ -5,13 +5,14 @@ import (
 )
 
 type Expr interface {
+	accept(v Visitor) string
 }
 
 type Visitor interface {
-	visitForBinary(*Binary)
-	visitForGrouping(*Grouping)
-	visitForLiteral(*Literal)
-	visitForUnary(*Unary)
+	visitForBinary(*Binary) string
+	visitForGrouping(*Grouping) string
+	visitForLiteral(*Literal) string
+	visitForUnary(*Unary) string
 }
 type Binary struct {
 	Left     Expr
@@ -19,24 +20,24 @@ type Binary struct {
 	Right    Expr
 }
 
-func (c *Binary) accept(v Visitor) {
-	v.visitForBinary(c)
+func (c *Binary) accept(v Visitor) string {
+	return v.visitForBinary(c)
 }
 
 type Grouping struct {
 	Expression Expr
 }
 
-func (c *Grouping) accept(v Visitor) {
-	v.visitForGrouping(c)
+func (c *Grouping) accept(v Visitor) string {
+	return v.visitForGrouping(c)
 }
 
 type Literal struct {
 	Value interface{}
 }
 
-func (c *Literal) accept(v Visitor) {
-	v.visitForLiteral(c)
+func (c *Literal) accept(v Visitor) string {
+	return v.visitForLiteral(c)
 }
 
 type Unary struct {
@@ -44,6 +45,6 @@ type Unary struct {
 	Right    Expr
 }
 
-func (c *Unary) accept(v Visitor) {
-	v.visitForUnary(c)
+func (c *Unary) accept(v Visitor) string {
+	return v.visitForUnary(c)
 }
