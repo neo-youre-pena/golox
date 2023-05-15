@@ -36,13 +36,14 @@ func DefineAst(outputDir string, baseName string, types []string) {
 	buffer.WriteString(")\n")
 	buffer.WriteString("\n")
 	buffer.WriteString("type " + capitalize(baseName) + " interface {\n")
+	buffer.WriteString("\taccept(v Visitor) string\n")
 	buffer.WriteString("}\n")
 	buffer.WriteString("\n")
 
 	buffer.WriteString("type Visitor interface {\n")
 	for _, t := range types {
 		className := strings.TrimSpace(t[:bytes.IndexByte([]byte(t), ':')])
-		buffer.WriteString("\tvisitFor" + className + "(*" + className + ")\n")
+		buffer.WriteString("\tvisitFor" + className + "(*" + className + ") string\n")
 	}
 
 	buffer.WriteString("}\n")
@@ -81,8 +82,8 @@ func defineType(buffer *bytes.Buffer, className string, fieldList string) {
 }
 
 func defineAcceptFunc(buffer *bytes.Buffer, className string) {
-	buffer.WriteString("func (c *" + className + ") accept(v Visitor) {\n")
-	buffer.WriteString("\tv.visitFor" + className + "(c)\n")
+	buffer.WriteString("func (c *" + className + ") accept(v Visitor) string {\n")
+	buffer.WriteString("\treturn v.visitFor" + className + "(c)\n")
 	buffer.WriteString("}\n")
 }
 
