@@ -8,30 +8,30 @@ import (
 type Ast struct {
 }
 
-func (a *Ast) print(expr Expr) string {
+func (a *Ast) print(expr Expr[string]) string {
 	return expr.accept(a)
 }
 
-func (a *Ast) visitForBinary(b *Binary) string {
+func (a *Ast) visitForBinary(b *Binary[string]) string {
 	return a.parenthesize(b.Operator.Lexeme, b.Left, b.Right)
 }
 
-func (a *Ast) visitForGrouping(g *Grouping) string {
+func (a *Ast) visitForGrouping(g *Grouping[string]) string {
 	return a.parenthesize("group", g.Expression)
 }
 
-func (a *Ast) visitForLiteral(l *Literal) string {
+func (a *Ast) visitForLiteral(l *Literal[string]) string {
 	if l.Value == nil {
 		return "nil"
 	}
 	return fmt.Sprintf("%v", l.Value)
 }
 
-func (a *Ast) visitForUnary(u *Unary) string {
+func (a *Ast) visitForUnary(u *Unary[string]) string {
 	return a.parenthesize(u.Operator.Lexeme, u.Right)
 }
 
-func (a *Ast) parenthesize(name string, exprs ...Expr) string {
+func (a *Ast) parenthesize(name string, exprs ...Expr[string]) string {
 	var buffer bytes.Buffer
 
 	buffer.WriteString("(")

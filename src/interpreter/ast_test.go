@@ -7,15 +7,15 @@ import (
 )
 
 func TestAst(t *testing.T) {
-	expr := Binary{
-		Left: &Unary{
+	expr := Binary[string]{
+		Left: &Unary[string]{
 			Operator: token.Token{
 				Type:    token.MINUS,
 				Lexeme:  "-",
 				Literal: nil,
 				Line:    1,
 			},
-			Right: &Literal{
+			Right: &Literal[string]{
 				Value: 123,
 			},
 		},
@@ -25,8 +25,8 @@ func TestAst(t *testing.T) {
 			Literal: nil,
 			Line:    1,
 		},
-		Right: &Grouping{
-			Expression: &Literal{
+		Right: &Grouping[string]{
+			Expression: &Literal[string]{
 				Value: 45.67,
 			},
 		},

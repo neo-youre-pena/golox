@@ -18,10 +18,10 @@ func check(e error) {
 
 func main() {
 	DefineAst("../interpreter/", "expr", []string{
-		"Binary   : Left Expr , Operator token.Token , Right Expr ",
-		"Grouping : Expression Expr ",
+		"Binary   : Left Expr[R] , Operator token.Token , Right Expr[R] ",
+		"Grouping : Expression Expr[R] ",
 		"Literal  : Value interface {} ",
-		"Unary    : Operator token.Token , Right Expr ",
+		"Unary    : Operator token.Token , Right Expr[R] ",
 	})
 }
 
@@ -35,15 +35,15 @@ func DefineAst(outputDir string, baseName string, types []string) {
 	buffer.WriteString("\t\"github.com/neo-youre-pena/golox/src/token\"\n")
 	buffer.WriteString(")\n")
 	buffer.WriteString("\n")
-	buffer.WriteString("type " + capitalize(baseName) + " interface {\n")
-	buffer.WriteString("\taccept(v Visitor) string\n")
+	buffer.WriteString("type " + capitalize(baseName) + "[R any] interface {\n")
+	buffer.WriteString("\taccept(v Visitor[R]) R\n")
 	buffer.WriteString("}\n")
 	buffer.WriteString("\n")
 
-	buffer.WriteString("type Visitor interface {\n")
+	buffer.WriteString("type Visitor[R any] interface {\n")
 	for _, t := range types {
 		className := strings.TrimSpace(t[:bytes.IndexByte([]byte(t), ':')])
-		buffer.WriteString("\tvisitFor" + className + "(*" + className + ") string\n")
+		buffer.WriteString("\tvisitFor" + className + "(*" + className + "[R]) R\n")
 	}
 
 	buffer.WriteString("}\n")
@@ -69,7 +69,7 @@ func DefineAst(outputDir string, baseName string, types []string) {
 }
 
 func defineType(buffer *bytes.Buffer, className string, fieldList string) {
-	buffer.WriteString("type " + className + " struct {\n")
+	buffer.WriteString("type " + className + "[R any] struct {\n")
 
 	fields := bytes.Split([]byte(fieldList), []byte{','})
 
@@ -82,7 +82,7 @@ func defineType(buffer *bytes.Buffer, className string, fieldList string) {
 }
 
 func defineAcceptFunc(buffer *bytes.Buffer, className string) {
-	buffer.WriteString("func (c *" + className + ") accept(v Visitor) string {\n")
+	buffer.WriteString("func (c *" + className + "[R]) accept(v Visitor[R]) R {\n")
 	buffer.WriteString("\treturn v.visitFor" + className + "(c)\n")
 	buffer.WriteString("}\n")
 }
